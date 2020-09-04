@@ -8,6 +8,7 @@ Created on Thu Aug 27 02:02:23 2020
 
 import cv2
 import os
+import numpy as np
 
 def process_dataset_folder(path_with_folder,lista_img,train_or_test,with_without,train,test):
     
@@ -17,9 +18,9 @@ def process_dataset_folder(path_with_folder,lista_img,train_or_test,with_without
         img = cv2.resize(img,(28,28))
         img = cv2.threshold(img,140,255,cv2.THRESH_BINARY)
         if train_or_test == "train":
-            train.append([img[1],with_without])
+            train.append([np.where(img[1]==255,1,img[1]),with_without])
         elif train_or_test == "test":
-            test.append([img[1],with_without])
+            test.append([np.where(img[1]==255,1,img[1]),with_without])
     
 def process_data_set (path):
    

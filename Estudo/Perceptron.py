@@ -22,6 +22,7 @@ saidas = np.array([0,1,0,1]).T
 
 D = entradas.shape[1]
 pesos = 2 * np.random.random(size=D)-1
+print(pesos)
 bias = 2 * np.random.random()-1
 LR = 0.1
 errorTotal = 1

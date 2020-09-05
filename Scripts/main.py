@@ -14,4 +14,8 @@ import cv2
 path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
-train,test = pdt.process_data_set(path)
+train,test,dataSet,train_saidas,test_saidas = pdt.process_data_set(path)
+
+cv2.imshow("",train[0])
+cv2.waitKey(0)
+cv2.destroyAllWindows()

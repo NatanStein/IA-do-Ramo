@@ -8,6 +8,7 @@ Created on Mon May  4 02:45:09 2020
 
 import numpy as np
 from sklearn import datasets
+import process_dataset as pdt
 
 def sigmoide(soma):
     return 1 / (1+np.exp(-soma))
@@ -26,17 +27,24 @@ for i in range(569):
 
 #entradas = np.array([[0,0],[0,1],[1,0],[1,1]])
 #saidas = np.array([[0],[1],[1],[0]])
+path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
+#Modifique o path para onde está a sua pasta DataSet
 
-pesos0 = 2 * np.random.random((30,15)) - 1
-pesos1 = 2 * np.random.random((15,15)) - 1
-pesos2 = 2 * np.random.random((15,1)) - 1
+train,test,dataset,train_saidas,test_saidas = pdt.process_data_set(path)
+
+entradas = np.array(train)
+saidas = np.array(train_saidas)
+
+pesos0 = 2 * np.random.random((616,28)) - 1
+pesos1 = 2 * np.random.random((28,28)) - 1
+pesos2 = 2 * np.random.random((28,1)) - 1
 
 momento = 1
 taxaAprendizagem = 0.4
 epocas = 100000
 for j in range(epocas):   
     camadaEntrada = entradas
-    somaSinapse0 = np.dot(camadaEntrada,pesos0)
+    somaSinapse0 = np.dot(camadaEntrada,pesos0.T)
     camadaOculta0 = sigmoide(somaSinapse0)
     
     somaSinapse1 = np.dot(camadaOculta0,pesos1)
@@ -64,7 +72,7 @@ for j in range(epocas):
     deltaOculta1Xpesos1 = deltaOculta1.dot(pesos1T)
     deltaOculta0 = derivadaOculta0 * deltaOculta1Xpesos1
     
-    entradaXdeltaSaida = camadaOculta1.T.dot(deltaSaida)
+    entradaXdeltaSaida = camadaOculta1.T.dot(deltaSaida.T)
     pesos2 = (pesos2 * momento) + (entradaXdeltaSaida * taxaAprendizagem)
     
     entradaXdeltaOculta1 = camadaOculta0.T.dot(deltaOculta1)

@@ -20,9 +20,7 @@ def derivada_sigmoid(x):
 #
     
 def relu(x):
-    if x >= 0:
-        return x
-    return 0
+    return max(x, 0)
 
 def derivada_relu(x):
     if x < 0:
@@ -33,9 +31,7 @@ def derivada_relu(x):
 #
        
 def leaky_relu(x):
-    if x >= 0:
-        return x
-    return 0.01*x
+    return max(0.01*x,x)
  
 def derivada_leaky_relu(x):
     if x < 0:

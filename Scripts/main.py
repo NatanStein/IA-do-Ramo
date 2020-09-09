@@ -6,6 +6,7 @@ Created on Fri Sep  4 17:51:49 2020
 """
 
 import process_dataset as pdt
+import funcao_ativacao as fa
 import cv2
 #
 #Bloco Principal
@@ -15,7 +16,8 @@ path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
 train,test,dataSet,train_saidas,test_saidas = pdt.process_data_set(path)
-
-cv2.imshow("",train[0])
+img = cv2.imread("C:/Users/natst/OneDrive/Natan Steinbruch/IA-do-Ramo/DataSet/train/without_mask/83.jpg",0)
+img = cv2.resize(img,(28,28)) / 255
+cv2.imshow("",img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

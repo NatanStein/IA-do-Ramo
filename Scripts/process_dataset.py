@@ -20,10 +20,10 @@ def process_dataset_folder(path_with_folder,lista_img,train_or_test,with_without
         #img = cv2.threshold(img,140,255,cv2.THRESH_BINARY)
         #train.append([np.where(img[1]==255,1,img[1]),with_without])
         if train_or_test == "train":
-            train.append(img)
+            train.append(img.flatten())
             train_saidas.append(with_without)
         elif train_or_test == "test":
-            test.append(img)
+            test.append(img.flatten())
             test_saidas.append(with_without)
         dataset.append([img,with_without])
 

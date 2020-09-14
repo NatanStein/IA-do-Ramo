@@ -16,8 +16,6 @@ path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
 train,test,dataSet,train_saidas,test_saidas = pdt.process_data_set(path)
-img = cv2.imread("C:/Users/natst/OneDrive/Natan Steinbruch/IA-do-Ramo/DataSet/train/without_mask/83.jpg",0)
+img = cv2.imread(path+"train/without_mask/83.jpg",0)
 img = cv2.resize(img,(28,28)) / 255
-cv2.imshow("",img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+img = img.flatten()

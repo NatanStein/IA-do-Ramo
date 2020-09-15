@@ -48,4 +48,4 @@ def process_data_set (path):
     process_dataset_folder(path+"test\\without_mask\\",lista_test_without_mask,"test",0,train,test,dataset,train_saidas,test_saidas)
     
     print("DataSet pronto!!")
-    return train,test,dataset,train_saidas,test_saidas
+    return np.reshape(train,(616,784)),np.reshape(test,(198,784)),dataset,train_saidas,test_saidas

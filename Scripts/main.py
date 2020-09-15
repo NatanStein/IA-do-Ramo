@@ -12,10 +12,10 @@ import cv2
 #
 #Bloco Principal
 #
-peso1 = 2 * np.random.random((784, 53)) -1
-peso2 = 2 * np.random.random((53, 36)) -1
-peso3 = 2 * np.random.random((36, 25)) -1
-peso4 = 2 * np.random.random((25, 1)) -1
+pesos1 = 2 * np.random.random((784, 53)) -1
+pesos2 = 2 * np.random.random((53, 36)) -1
+pesos3 = 2 * np.random.random((36, 25)) -1
+pesos4 = 2 * np.random.random((25, 1)) -1
 
 bias1 = np.zeros((1,53))
 bias2 = np.zeros((1,36))
@@ -27,6 +27,14 @@ path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
 train,test,dataSet,train_saidas,test_saidas = pdt.process_data_set(path)
-img = cv2.imread(path+"train/without_mask/83.jpg",0)
-img = cv2.resize(img,(28,28)) / 255
-img = img.flatten().reshape((1,784)) #Transforma a matriz 28x28 para um vetor linear
+
+camada_oculta0 = fa.relu(np.dot(train,pesos1) + bias1)
+
+camada_oculta1 = fa.relu(np.dot(camada_oculta0,pesos2) + bias2)
+
+camada_oculta2 = fa.relu(np.dot(camada_oculta1,pesos3) + bias3)
+
+camada_saida = fa.relu(np.dot(camada_oculta2,pesos4) + bias4)
+camada_saida = np.where(camada_saida > 0,1,0)
+
+

@@ -20,7 +20,7 @@ def derivada_sigmoid(x):
 #
     
 def relu(x):
-    return max(x, 0)
+    return np.where(x<=0,0,x)
 
 def derivada_relu(x):
     if x < 0:

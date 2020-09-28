@@ -23,9 +23,7 @@ def relu(x):
     return np.where(x<=0,0,x)
 
 def derivada_relu(x):
-    if x < 0:
-        return 0
-    return 1
+   return np.where(x<=0,0,1)
 
 #
 #

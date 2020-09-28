@@ -20,7 +20,7 @@ def derivada_sigmoid(x):
 #
     
 def relu(x):
-    return np.where(x<=0,0,x)
+    return np.where(x<0,0,x)
 
 def derivada_relu(x):
    return np.where(x<=0,0,1)
@@ -29,10 +29,8 @@ def derivada_relu(x):
 #
        
 def leaky_relu(x):
-    return max(0.01*x,x)
+    return np.where(x<=0,0.01*x,x)
  
 def derivada_leaky_relu(x):
-    if x < 0:
-        return 0.01
-    return 1
+   return np.where(x<0,0.01,1)
 

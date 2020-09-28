@@ -13,7 +13,7 @@ import random
 import cv2
 import matplotlib.pyplot as plt
 
-def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4):
+def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4,prt_sainda=False):
     inp1 = np.dot(teste,pesos1) + bias1
     camada_oculta1 = fa.sigmoid(inp1)
 
@@ -27,14 +27,23 @@ def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias
     camada_saida = fa.sigmoid(inp4)
     #camada_saida = np.where(camada_saida > 0,1,0)
 
-    custo = fc.mse(teste_saidas,camada_saida,198,False)
-    #print("erro: %.10f"%(custo))
+    custo = fc.mse(teste_saidas,camada_saida,qtt_test,False)
+    
+    if prt_sainda:
+        print("erro: %.10f"%(custo))
+        print(camada_saida)
     
     return custo
 #
 #Bloco Principal
 #
-pesos1 = 2 * np.random.random((784, 53)) -1
+
+path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
+#Modifique o path para onde está a sua pasta DataSet
+
+train,test,dataSet,train_saidas,test_saidas,dimx,dimy = pdt.process_data_set(path)
+
+pesos1 = 2 * np.random.random((dimx*dimy, 53)) -1
 pesos2 = 2 * np.random.random((53, 36)) -1
 pesos3 = 2 * np.random.random((36, 25)) -1
 pesos4 = 2 * np.random.random((25, 1)) -1
@@ -44,14 +53,10 @@ bias2 = np.zeros((1,36))
 bias3 = np.zeros((1,25))
 bias4 = np.zeros((1,1))
 
-
-path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
-#Modifique o path para onde está a sua pasta DataSet
-
-train,test,dataSet,train_saidas,test_saidas = pdt.process_data_set(path)
-
-epochs = 10000
-learning_rate = 0.3
+qtt_treino = 616
+qtt_test = 198
+epochs = 2000
+learning_rate = 0.6
 erros =[]
 erros2 = []
 for epocas in range(epochs+1):
@@ -69,11 +74,12 @@ for epocas in range(epochs+1):
     camada_saida = fa.sigmoid(inp4)
     #camada_saida = np.where(camada_saida > 0,1,0)
 
-    custo = fc.mse(train_saidas,camada_saida,616,False)
+    custo = fc.mse(train_saidas,camada_saida,qtt_treino,False)
     erros.append(custo)
     erros2.append(test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4))
     print("epoca: %d/%d erro: %f"%(epocas,epochs,custo))
-    derivada_saida = fc.mse(train_saidas,camada_saida,616,True)
+    
+    derivada_saida = fc.mse(train_saidas,camada_saida,qtt_treino,True)
     
     dinp4 = fa.derivada_sigmoid(inp4) * derivada_saida
     derivada_oculta3 = np.dot(dinp4,pesos4.T)
@@ -106,6 +112,26 @@ for epocas in range(epochs+1):
     bias1 = bias1 - learning_rate * d_bias1
 
 result = test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4)
-plt.plot(erros)
-plt.plot(erros2)
+plt.plot(erros,label="train")
+plt.plot(erros2, label="test")
+plt.legend()
 plt.show()
+
+resposta = input("Deseja fazer um Dump dos pesos e bias? S/N: ")
+
+if resposta == "S":
+    
+    np.savetxt(path[0:-8]+"Pesos\\pesos1.txt",pesos1, delimiter=",")
+    np.savetxt(path[0:-8]+"Pesos\\pesos2.txt",pesos2, delimiter=",")
+    np.savetxt(path[0:-8]+"Pesos\\pesos3.txt",pesos3, delimiter=",")
+    np.savetxt(path[0:-8]+"Pesos\\pesos4.txt",pesos4, delimiter=",")
+    
+    np.savetxt(path[0:-8]+"Bias\\Bias1.txt",bias1, delimiter=",")
+    np.savetxt(path[0:-8]+"Bias\\Bias2.txt",bias2, delimiter=",")
+    np.savetxt(path[0:-8]+"Bias\\Bias3.txt",bias3, delimiter=",")
+    np.savetxt(path[0:-8]+"Bias\\Bias4.txt",bias4, delimiter=",") 
+    
+    print("Dump dos pesos e bias concluido")
+
+else:
+    print("Pesos e Bias não foram salvos")

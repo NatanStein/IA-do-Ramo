@@ -43,7 +43,7 @@ path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
 train,test,dataSet,train_saidas,test_saidas,dimx,dimy = pdt.process_data_set(path)
-multi_network = 250
+multi_network = 100
 min_result = 100
 
 for multi_network in range(multi_network+1):
@@ -56,12 +56,18 @@ for multi_network in range(multi_network+1):
     bias2 = np.zeros((1,36))
     bias3 = np.zeros((1,25))
     bias4 = np.zeros((1,1))
+    
+    momentum = 0.3
+    prev_dw1 = 0.0
+    prev_dw2 = 0.0
+    prev_dw3 = 0.0
+    prev_dw4 = 0.0
 
     qtt_treino = 616
     qtt_test = 198
     dinamic = False
-    epochs = 2000
-    learning_rate = 0.6
+    epochs = 5000
+    learning_rate = 0.5
     erros =[]
     erros2 = []
 
@@ -81,9 +87,10 @@ for multi_network in range(multi_network+1):
         #camada_saida = np.where(camada_saida > 0,1,0)
 
         custo = fc.mse(train_saidas,camada_saida,qtt_treino,False)
+        result = test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4)
         erros.append(custo)
-        erros2.append(test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4))
-        print("epoca: %d/%d erro: %f"%(epocas,epochs,custo))
+        erros2.append(result)
+        print("epoca: %d/%d erro_train: %f erro_test: %f Rede Neural: %d"%(epocas,epochs,custo,result,multi_network))
     
         derivada_saida = fc.mse(train_saidas,camada_saida,qtt_treino,True)
     
@@ -107,15 +114,20 @@ for multi_network in range(multi_network+1):
         d_pesos1 = np.dot(dinp1.T,train)
         d_bias1 = 1.0 * dinp1.sum(axis=0,keepdims=True)
     
-        pesos4 = pesos4 - learning_rate * d_pesos4.T
-        pesos3 = pesos3 - learning_rate * d_pesos3.T
-        pesos2 = pesos2 - learning_rate * d_pesos2.T
-        pesos1 = pesos1 - learning_rate * d_pesos1.T
+        pesos4 = pesos4 + (-learning_rate * d_pesos4.T + momentum*prev_dw4)
+        pesos3 = pesos3 + (-learning_rate * d_pesos3.T + momentum*prev_dw3)
+        pesos2 = pesos2 + (-learning_rate * d_pesos2.T + momentum*prev_dw2)
+        pesos1 = pesos1 + (-learning_rate * d_pesos1.T + momentum*prev_dw1)
     
         bias4 = bias4 - learning_rate * d_bias4
         bias3 = bias3 - learning_rate * d_bias3
         bias2 = bias2 - learning_rate * d_bias2
         bias1 = bias1 - learning_rate * d_bias1
+        
+        prev_dw1 = d_pesos1.T
+        prev_dw2 = d_pesos2.T
+        prev_dw3 = d_pesos3.T
+        prev_dw4 = d_pesos4.T
     
         if dinamic:
             plt.ion()
@@ -126,9 +138,9 @@ for multi_network in range(multi_network+1):
             plt.legend()
             plt.pause(0.01)
 
-    result = test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4)
+    
     if result < min_result:
-        
+
         min_result = result
         pesos1_final = pesos1
         pesos2_final = pesos2
@@ -139,6 +151,9 @@ for multi_network in range(multi_network+1):
         bias2_final = bias2 
         bias3_final = bias3 
         bias4_final = bias4 
+        
+        erros_final = erros
+        erros2_final = erros2
 
     if dinamic == False:
         plt.plot(erros,label="train")
@@ -149,6 +164,13 @@ for multi_network in range(multi_network+1):
         plt.ioff()
     
     print("Rede Neural %d"%(multi_network))
+
+
+plt.plot(erros_final,label="train")
+plt.plot(erros2_final, label="test")
+plt.legend()
+plt.show()
+print(min_result)
 
 resposta = input("Deseja fazer um Dump dos pesos e bias? S/N: ")
 

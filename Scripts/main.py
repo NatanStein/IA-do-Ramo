@@ -14,7 +14,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4,prt_sainda=False):
+def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4,prt_saida=False):
     inp1 = np.dot(teste,pesos1) + bias1
     camada_oculta1 = fa.sigmoid(inp1)
 
@@ -30,7 +30,7 @@ def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias
 
     custo = fc.mse(teste_saidas,camada_saida,qtt_test,False)
     
-    if prt_sainda:
+    if prt_saida:
         print("erro: %.10f"%(custo))
         print(camada_saida)
     
@@ -54,11 +54,17 @@ bias2 = np.zeros((1,36))
 bias3 = np.zeros((1,25))
 bias4 = np.zeros((1,1))
 
+momentum = 0.4
+prev_dw1 = 0.0
+prev_dw2 = 0.0
+prev_dw3 = 0.0
+prev_dw4 = 0.0
+
 qtt_treino = 616
 qtt_test = 198
-dinamic = True
-epochs = 1000
-learning_rate = 0.5
+dinamic = False
+epochs = 3000
+learning_rate = 0.6
 erros =[]
 erros2 = []
 
@@ -78,16 +84,17 @@ for epocas in range(epochs+1):
     #camada_saida = np.where(camada_saida > 0,1,0)
 
     custo = fc.mse(train_saidas,camada_saida,qtt_treino,False)
+    result = test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4)
     erros.append(custo)
-    erros2.append(test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4))
-    print("epoca: %d/%d erro: %f"%(epocas,epochs,custo))
+    erros2.append(result)
+    print("epoca: %d/%d erro_train: %f erro_test: %f"%(epocas,epochs,custo,result))
     
     derivada_saida = fc.mse(train_saidas,camada_saida,qtt_treino,True)
     
-    dinp4 = fa.derivada_sigmoid(inp4) * derivada_saida
-    derivada_oculta3 = np.dot(dinp4,pesos4.T)
-    d_pesos4 = np.dot(dinp4.T,camada_oculta3)
-    d_bias4 = 1.0 * dinp4.sum(axis=0,keepdims=True)
+    dinp4 = fa.derivada_sigmoid(inp4) * derivada_saida # dy =  da(y) * df(y')
+    derivada_oculta3 = np.dot(dinp4,pesos4.T) # dx = w.T * dy 
+    d_pesos4 = np.dot(dinp4.T,camada_oculta3) # dw = x * dy.T
+    d_bias4 = 1.0 * dinp4.sum(axis=0,keepdims=True) # db = sum(dy) 
     
     dinp3 = fa.derivada_sigmoid(inp3) * derivada_oculta3
     derivada_oculta2 = np.dot(dinp3,pesos3.T)
@@ -104,15 +111,20 @@ for epocas in range(epochs+1):
     d_pesos1 = np.dot(dinp1.T,train)
     d_bias1 = 1.0 * dinp1.sum(axis=0,keepdims=True)
     
-    pesos4 = pesos4 - learning_rate * d_pesos4.T
-    pesos3 = pesos3 - learning_rate * d_pesos3.T
-    pesos2 = pesos2 - learning_rate * d_pesos2.T
-    pesos1 = pesos1 - learning_rate * d_pesos1.T
+    pesos4 = pesos4 + (-learning_rate * d_pesos4.T + momentum*prev_dw4)
+    pesos3 = pesos3 + (-learning_rate * d_pesos3.T + momentum*prev_dw3)
+    pesos2 = pesos2 + (-learning_rate * d_pesos2.T + momentum*prev_dw2)
+    pesos1 = pesos1 + (-learning_rate * d_pesos1.T + momentum*prev_dw1)
     
     bias4 = bias4 - learning_rate * d_bias4
     bias3 = bias3 - learning_rate * d_bias3
     bias2 = bias2 - learning_rate * d_bias2
     bias1 = bias1 - learning_rate * d_bias1
+    
+    prev_dw1 = d_pesos1.T
+    prev_dw2 = d_pesos2.T
+    prev_dw3 = d_pesos3.T
+    prev_dw4 = d_pesos4.T
     
     if dinamic:
         plt.ion()
@@ -134,6 +146,7 @@ if dinamic == False:
 else:
     plt.ioff()
 
+print(result)
 resposta = input("Deseja fazer um Dump dos pesos e bias? S/N: ")
 
 if resposta == "S":

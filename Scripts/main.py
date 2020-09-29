@@ -13,6 +13,7 @@ import random
 import cv2
 import matplotlib.pyplot as plt
 
+
 def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4,prt_sainda=False):
     inp1 = np.dot(teste,pesos1) + bias1
     camada_oculta1 = fa.sigmoid(inp1)
@@ -55,10 +56,12 @@ bias4 = np.zeros((1,1))
 
 qtt_treino = 616
 qtt_test = 198
-epochs = 2000
-learning_rate = 0.6
+dinamic = True
+epochs = 1000
+learning_rate = 0.5
 erros =[]
 erros2 = []
+
 for epocas in range(epochs+1):
     
     inp1 = np.dot(train,pesos1) + bias1
@@ -110,12 +113,26 @@ for epocas in range(epochs+1):
     bias3 = bias3 - learning_rate * d_bias3
     bias2 = bias2 - learning_rate * d_bias2
     bias1 = bias1 - learning_rate * d_bias1
+    
+    if dinamic:
+        plt.ion()
+        plt.cla()
+        plt.clf()
+        plt.plot(erros,label="train")
+        plt.plot(erros2, label="test")
+        plt.legend()
+        plt.pause(0.01)
 
 result = test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4)
-plt.plot(erros,label="train")
-plt.plot(erros2, label="test")
-plt.legend()
-plt.show()
+
+
+if dinamic == False:
+    plt.plot(erros,label="train")
+    plt.plot(erros2, label="test")
+    plt.legend()
+    plt.show()
+else:
+    plt.ioff()
 
 resposta = input("Deseja fazer um Dump dos pesos e bias? S/N: ")
 
@@ -135,3 +152,4 @@ if resposta == "S":
 
 else:
     print("Pesos e Bias não foram salvos")
+    

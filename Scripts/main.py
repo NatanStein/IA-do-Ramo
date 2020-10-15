@@ -26,7 +26,6 @@ def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias
 
     inp4 = np.dot(camada_oculta3,pesos4) + bias4
     camada_saida = fa.sigmoid(inp4)
-    #camada_saida = np.where(camada_saida > 0,1,0)
 
     custo = fc.mse(teste_saidas,camada_saida,qtt_test,False)
     

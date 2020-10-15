@@ -2,7 +2,7 @@
 """
 Created on Thu Oct 15 14:25:47 2020
 
-@author: natst
+@author: Natan Steinbruch
 """
 
 

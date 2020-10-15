@@ -43,8 +43,8 @@ path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
 train,test,dataSet,train_saidas,test_saidas,dimx,dimy = pdt.process_data_set(path)
-multi_network = 100
-min_result = 100
+multi_network = 120
+min_result = 10
 
 for multi_network in range(multi_network+1):
     pesos1 = 2 * np.random.random((dimx*dimy, 53)) -1
@@ -57,7 +57,7 @@ for multi_network in range(multi_network+1):
     bias3 = np.zeros((1,25))
     bias4 = np.zeros((1,1))
     
-    momentum = 0.3
+    momentum = 0.1
     prev_dw1 = 0.0
     prev_dw2 = 0.0
     prev_dw3 = 0.0
@@ -67,7 +67,7 @@ for multi_network in range(multi_network+1):
     qtt_test = 198
     dinamic = False
     epochs = 5000
-    learning_rate = 0.5
+    learning_rate = 0.7
     erros =[]
     erros2 = []
 

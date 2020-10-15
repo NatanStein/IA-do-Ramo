@@ -44,17 +44,21 @@ path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 
 train,test,dataSet,train_saidas,test_saidas,dimx,dimy = pdt.process_data_set(path)
 
-pesos1 = 2 * np.random.random((dimx*dimy, 53)) -1
-pesos2 = 2 * np.random.random((53, 36)) -1
-pesos3 = 2 * np.random.random((36, 25)) -1
-pesos4 = 2 * np.random.random((25, 1)) -1
+n_camada_oculta1 = 53*1
+n_camada_oculta2 = 36*1
+n_camada_oculta3 = 25*1
 
-bias1 = np.zeros((1,53))
-bias2 = np.zeros((1,36))
-bias3 = np.zeros((1,25))
+pesos1 = 2 * np.random.random((dimx*dimy, n_camada_oculta1)) -1
+pesos2 = 2 * np.random.random((n_camada_oculta1, n_camada_oculta2)) -1
+pesos3 = 2 * np.random.random((n_camada_oculta2, n_camada_oculta3)) -1
+pesos4 = 2 * np.random.random((n_camada_oculta3, 1)) -1
+
+bias1 = np.zeros((1,n_camada_oculta1))
+bias2 = np.zeros((1,n_camada_oculta2))
+bias3 = np.zeros((1,n_camada_oculta3))
 bias4 = np.zeros((1,1))
 
-momentum = 0.4
+momentum = 0.3
 prev_dw1 = 0.0
 prev_dw2 = 0.0
 prev_dw3 = 0.0
@@ -63,7 +67,7 @@ prev_dw4 = 0.0
 qtt_treino = 616
 qtt_test = 198
 dinamic = False
-epochs = 3000
+epochs = 5
 learning_rate = 0.6
 erros =[]
 erros2 = []

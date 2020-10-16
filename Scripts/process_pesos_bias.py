@@ -56,7 +56,7 @@ def process_entradas(path):
         img = cv2.resize(img,(28,28)) / 255
         entradas.append(img.flatten().reshape((1,28*28)))
         
-    return np.reshape(entradas,(len(lista_img),784))
+    return np.reshape(entradas,(len(lista_img),784)), lista_img
 
 #
 #Bloco Principal
@@ -64,6 +64,12 @@ def process_entradas(path):
 
 w_layer1, w_layer2, w_layer3, w_layer4, b_layer1, b_layer2, b_layer3, b_layer4 = read_weights_bias(path_bias, path_pesos)
 
-entradas = process_entradas('C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Validacao\\')
+entradas,lista_img = process_entradas('C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Validacao\\')
 
 saida = predict(entradas,"sigmoid")
+
+for resp,nome in zip(saida,lista_img):
+    print('Nome da imagem: %s  Resposta: %f'%(nome,resp))
+
+#saidas = np.where(saida >= 0.5,1,0)
+#print(np.count_nonzero(saidas == 1)/len(saidas) * 100)

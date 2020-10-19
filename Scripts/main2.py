@@ -12,6 +12,7 @@ import numpy as np
 import random
 import cv2
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 
 def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4,prt_sainda=False):
@@ -42,7 +43,9 @@ def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias
 path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
-train,test,dataSet,train_saidas,test_saidas,dimx,dimy = pdt.process_data_set(path)
+dataset,dataset_saidas,dimx,dimy = pdt.process_data_set(path)
+
+train, test, train_saidas, test_saidas = train_test_split(dataset,dataset_saidas)
 multi_network = 120
 min_result = 10
 
@@ -63,8 +66,8 @@ for multi_network in range(multi_network+1):
     prev_dw3 = 0.0
     prev_dw4 = 0.0
 
-    qtt_treino = 616
-    qtt_test = 198
+    qtt_treino = len(train)
+    qtt_test = len(test)
     dinamic = False
     epochs = 5000
     learning_rate = 0.7

@@ -12,7 +12,7 @@ import numpy as np
 import random
 import cv2
 import matplotlib.pyplot as plt
-
+from sklearn.model_selection import train_test_split
 
 def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4,prt_saida=False):
     inp1 = np.dot(teste,pesos1) + bias1
@@ -27,7 +27,7 @@ def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias
     inp4 = np.dot(camada_oculta3,pesos4) + bias4
     camada_saida = fa.sigmoid(inp4)
 
-    custo = fc.mse(teste_saidas,camada_saida,qtt_test,False)
+    custo = fc.binary_cross_entropy(teste_saidas,camada_saida,qtt_test,False)
     
     if prt_saida:
         print("erro: %.10f"%(custo))
@@ -41,7 +41,9 @@ def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias
 path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
-train,test,dataSet,train_saidas,test_saidas,dimx,dimy = pdt.process_data_set(path)
+dataset,dataset_saidas,dimx,dimy = pdt.process_data_set(path)
+
+train, test, train_saidas, test_saidas = train_test_split(dataset,dataset_saidas)
 
 n_camada_oculta1 = 53*1
 n_camada_oculta2 = 36*1
@@ -63,10 +65,10 @@ prev_dw2 = 0.0
 prev_dw3 = 0.0
 prev_dw4 = 0.0
 
-qtt_treino = 616
-qtt_test = 198
+qtt_treino = len(train)
+qtt_test = len(test)
 dinamic = False
-epochs = 5
+epochs = 5000
 learning_rate = 0.6
 erros =[]
 erros2 = []
@@ -86,13 +88,13 @@ for epocas in range(epochs+1):
     camada_saida = fa.sigmoid(inp4)
     #camada_saida = np.where(camada_saida > 0,1,0)
 
-    custo = fc.mse(train_saidas,camada_saida,qtt_treino,False)
+    custo = fc.binary_cross_entropy(train_saidas,camada_saida,qtt_treino,False)
     result = test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4)
     erros.append(custo)
     erros2.append(result)
     print("epoca: %d/%d erro_train: %f erro_test: %f"%(epocas,epochs,custo,result))
     
-    derivada_saida = fc.mse(train_saidas,camada_saida,qtt_treino,True)
+    derivada_saida = fc.binary_cross_entropy(train_saidas,camada_saida,qtt_treino,True)
     
     dinp4 = fa.derivada_sigmoid(inp4) * derivada_saida # dy =  da(y) * df(y')
     derivada_oculta3 = np.dot(dinp4,pesos4.T) # dx = w.T * dy 

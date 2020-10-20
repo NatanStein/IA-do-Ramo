@@ -59,7 +59,7 @@ bias2 = np.zeros((1,n_camada_oculta2))
 bias3 = np.zeros((1,n_camada_oculta3))
 bias4 = np.zeros((1,1))
 
-momentum = 0.3
+momentum = 0.05  
 prev_dw1 = 0.0
 prev_dw2 = 0.0
 prev_dw3 = 0.0
@@ -68,8 +68,8 @@ prev_dw4 = 0.0
 qtt_treino = len(train)
 qtt_test = len(test)
 dinamic = False
-epochs = 5000
-learning_rate = 0.6
+epochs = 50000
+learning_rate = 0.1
 erros =[]
 erros2 = []
 

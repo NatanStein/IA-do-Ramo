@@ -11,12 +11,12 @@ import funcao_ativacao as fa
 import os
 import cv2
 
-path_bias ='C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Bias-NNN-SIG-6-200000-2-BCE\\' 
-path_pesos = 'C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Pesos-NNN-SIG-6-200000-2-BCE\\'
+path_bias ='C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Bias-NNN-SIG-6-20000-2-BCE\\' 
+path_pesos = 'C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Pesos-NNN-SIG-6-20000-2-BCE\\'
 #Modifique seu PATH
 
 
-def read_weights_bias(path_bias, path_pesos):
+def read_weights_bias(path_bias, path_pesos, div):
     
     w_layer1 = np.genfromtxt(path_pesos +'/Pesos1.txt', delimiter= ',')
     w_layer2 = np.genfromtxt(path_pesos +'/Pesos2.txt', delimiter=',')
@@ -28,7 +28,7 @@ def read_weights_bias(path_bias, path_pesos):
     b_layer3 = np.genfromtxt(path_bias +'/Bias3.txt', delimiter=',')
     b_layer4 = np.genfromtxt(path_bias +'/Bias4.txt', delimiter=',')
     
-    return w_layer1.reshape((784,53)), w_layer2.reshape((53,36)), w_layer3.reshape((36,25)), w_layer4.reshape((25,1)), b_layer1.reshape((1,53)), b_layer2.reshape((1,36)), b_layer3.reshape((1,25)), b_layer4.reshape((1,1))
+    return w_layer1.reshape((784,53//div)), w_layer2.reshape((53//div,36//div)), w_layer3.reshape((36//div,25//div)), w_layer4.reshape((25//div,1)), b_layer1.reshape((1,53//div)), b_layer2.reshape((1,36//div)), b_layer3.reshape((1,25//div)), b_layer4.reshape((1,1))
 
 
 def predict (test,funcao_ativacao):
@@ -62,7 +62,7 @@ def process_entradas(path):
 #Bloco Principal
 #
 
-w_layer1, w_layer2, w_layer3, w_layer4, b_layer1, b_layer2, b_layer3, b_layer4 = read_weights_bias(path_bias, path_pesos)
+w_layer1, w_layer2, w_layer3, w_layer4, b_layer1, b_layer2, b_layer3, b_layer4 = read_weights_bias(path_bias, path_pesos, 1)
 
 entradas,lista_img = process_entradas('C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Validacao\\')
 

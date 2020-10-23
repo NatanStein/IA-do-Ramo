@@ -43,11 +43,11 @@ path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
 
 dataset,dataset_saidas,dimx,dimy = pdt.process_data_set(path)
 
-train, test, train_saidas, test_saidas = train_test_split(dataset,dataset_saidas)
+train, test, train_saidas, test_saidas = train_test_split(dataset,dataset_saidas,test_size=0.3)
 
-n_camada_oculta1 = 53*1
-n_camada_oculta2 = 36*1
-n_camada_oculta3 = 25*1
+n_camada_oculta1 = 53//1
+n_camada_oculta2 = 36//1
+n_camada_oculta3 = 25//1
 
 pesos1 = 2 * np.random.random((dimx*dimy, n_camada_oculta1)) -1
 pesos2 = 2 * np.random.random((n_camada_oculta1, n_camada_oculta2)) -1
@@ -59,7 +59,7 @@ bias2 = np.zeros((1,n_camada_oculta2))
 bias3 = np.zeros((1,n_camada_oculta3))
 bias4 = np.zeros((1,1))
 
-momentum = 2  
+momentum = 0.01  
 prev_dw1 = 0.0
 prev_dw2 = 0.0
 prev_dw3 = 0.0
@@ -69,7 +69,7 @@ qtt_treino = len(train)
 qtt_test = len(test)
 dinamic = False
 epochs = 20000
-learning_rate = 6
+learning_rate = 0.3
 erros =[]
 erros2 = []
 

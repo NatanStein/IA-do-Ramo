@@ -12,6 +12,7 @@ import numpy as np
 
 dimx = 28
 dimy = 28
+
 def process_dataset_folder(path_with_folder,lista_img,train_or_test,with_without,dataset,dataset_saidas):
     
     for name_img in lista_img:
@@ -21,6 +22,8 @@ def process_dataset_folder(path_with_folder,lista_img,train_or_test,with_without
 
         dataset.append([img])
         dataset_saidas.append([with_without])
+    
+    print('Processamento concluido em %s'%(path_with_folder))
 
 def process_data_set (path):
    

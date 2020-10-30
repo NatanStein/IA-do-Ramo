@@ -11,8 +11,8 @@ import funcao_ativacao as fa
 import os
 import cv2
 
-path_bias ='C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Bias-NNN-SIG-6-20000-2-BCE\\' 
-path_pesos = 'C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Pesos-NNN-SIG-6-20000-2-BCE\\'
+path_bias ='C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Bias-NNN-SIG-0.6-20000-0.3-MSE-0.001REG\\' 
+path_pesos = 'C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\Promissores\\Pesos-NNN-SIG-0.6-20000-0.3-MSE-0.001REG\\'
 #Modifique seu PATH
 
 

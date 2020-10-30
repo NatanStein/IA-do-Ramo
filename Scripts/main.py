@@ -26,14 +26,24 @@ def test_predict(teste,teste_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias
 
     inp4 = np.dot(camada_oculta3,pesos4) + bias4
     camada_saida = fa.sigmoid(inp4)
-
-    custo = fc.binary_cross_entropy(teste_saidas,camada_saida,qtt_test,False)
+    
+    regularization = (1.0/train_saidas.shape[0]) * ((l1_regularization(pesos1) * reg_l1_c1) + (l1_regularization(pesos2) * reg_l1_c2) + (l1_regularization(pesos3) * reg_l1_c3) + (l1_regularization(pesos4) * reg_l1_c4))
+    custo = fc.mse(teste_saidas,camada_saida,qtt_test,False) + regularization
     
     if prt_saida:
         print("erro: %.10f"%(custo))
         print(camada_saida)
     
     return custo
+
+def l1_regularization(pesos,derivative = False):
+    if derivative:
+        w = [np.where(p<0,-1,p) for p in pesos]
+        w = np.array([np.where(p > 0,1,p) for p in w])
+        return w
+    return np.sum([np.sum(np.abs(w)) for w in pesos ])
+        
+    
 #
 #Bloco Principal
 #
@@ -59,17 +69,22 @@ bias2 = np.zeros((1,n_camada_oculta2))
 bias3 = np.zeros((1,n_camada_oculta3))
 bias4 = np.zeros((1,1))
 
-momentum = 0.01  
+momentum = 0.3  
 prev_dw1 = 0.0
 prev_dw2 = 0.0
 prev_dw3 = 0.0
 prev_dw4 = 0.0
 
+reg_l1_c1 = 0.001
+reg_l1_c2 = 0.001
+reg_l1_c3 = 0.001
+reg_l1_c4 = 0.001
+
 qtt_treino = len(train)
 qtt_test = len(test)
 dinamic = False
 epochs = 20000
-learning_rate = 0.3
+learning_rate = 0.6
 erros =[]
 erros2 = []
 
@@ -87,33 +102,38 @@ for epocas in range(epochs+1):
     inp4 = np.dot(camada_oculta3,pesos4) + bias4
     camada_saida = fa.sigmoid(inp4)
     #camada_saida = np.where(camada_saida > 0,1,0)
-
-    custo = fc.binary_cross_entropy(train_saidas,camada_saida,qtt_treino,False)
+    
+    regularization = (1.0/train_saidas.shape[0]) * ((l1_regularization(pesos1) * reg_l1_c1) + (l1_regularization(pesos2) * reg_l1_c2) + (l1_regularization(pesos3) * reg_l1_c3) + (l1_regularization(pesos4) * reg_l1_c4))
+    custo = fc.mse(train_saidas,camada_saida,qtt_treino,False) + regularization
     result = test_predict(test,test_saidas,pesos1,pesos2,pesos3,pesos4,bias1,bias2,bias3,bias4)
     erros.append(custo)
     erros2.append(result)
     print("epoca: %d/%d erro_train: %f erro_test: %f"%(epocas,epochs,custo,result))
     
-    derivada_saida = fc.binary_cross_entropy(train_saidas,camada_saida,qtt_treino,True)
+    derivada_saida = fc.mse(train_saidas,camada_saida,qtt_treino,True)
     
     dinp4 = fa.derivada_sigmoid(inp4) * derivada_saida # dy =  da(y) * df(y')
     derivada_oculta3 = np.dot(dinp4,pesos4.T) # dx = w.T * dy 
     d_pesos4 = np.dot(dinp4.T,camada_oculta3) # dw = x * dy.T
+    d_pesos4 +=  ((1.0/train_saidas.shape[0]) * (l1_regularization(pesos4,True) * reg_l1_c4)).T
     d_bias4 = 1.0 * dinp4.sum(axis=0,keepdims=True) # db = sum(dy) 
     
     dinp3 = fa.derivada_sigmoid(inp3) * derivada_oculta3
     derivada_oculta2 = np.dot(dinp3,pesos3.T)
     d_pesos3 = np.dot(dinp3.T,camada_oculta2)
+    d_pesos3 += ((1.0/train_saidas.shape[0]) * (l1_regularization(pesos3,True) * reg_l1_c3)).T
     d_bias3 = 1.0 * dinp3.sum(axis=0,keepdims=True)
     
     dinp2 = fa.derivada_sigmoid(inp2) * derivada_oculta2
     derivada_oculta1 = np.dot(dinp2,pesos2.T)
     d_pesos2 = np.dot(dinp2.T,camada_oculta1)
+    d_pesos2 += ((1.0/train_saidas.shape[0]) * (l1_regularization(pesos2,True) * reg_l1_c2)).T
     d_bias2 = 1.0 * dinp2.sum(axis=0,keepdims=True)
     
     dinp1 = fa.derivada_sigmoid(inp1) * derivada_oculta1
     derivada_entrada = np.dot(dinp1,pesos1.T)
     d_pesos1 = np.dot(dinp1.T,train)
+    d_pesos1 += ((1.0/train_saidas.shape[0]) * (l1_regularization(pesos1,True) * reg_l1_c1)).T
     d_bias1 = 1.0 * dinp1.sum(axis=0,keepdims=True)
     
     pesos4 = pesos4 + (-learning_rate * d_pesos4.T + momentum*prev_dw4)

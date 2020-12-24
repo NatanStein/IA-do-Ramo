@@ -48,7 +48,7 @@ def l1_regularization(pesos,derivative = False):
 #Bloco Principal
 #
 
-path = "C:\\Users\\natst\\OneDrive\\Natan Steinbruch\\IA-do-Ramo\\DataSet\\"
+path = "C:\\DataSet\\"
 #Modifique o path para onde está a sua pasta DataSet
 
 dataset,dataset_saidas,dimx,dimy = pdt.process_data_set(path)
@@ -83,7 +83,7 @@ reg_l1_c4 = 0.001
 qtt_treino = len(train)
 qtt_test = len(test)
 dinamic = False
-epochs = 20000
+epochs = 2000
 learning_rate = 0.6
 erros =[]
 erros2 = []

@@ -5,15 +5,15 @@ import funcao_ativacao as fa
 
 ##lembrar de mudar os paths
 
-clf = cv2.CascadeClassifier('C:/Users/grocr/miniconda3/pkgs/libopencv-4.0.1-hbb9e17c_0/Library/etc/haarcascades/haarcascade_frontalface_alt2.xml') #pega o arquivo de reconhecimento facial do opencv. O diretório pode variar dependendo do sistema operacional
+clf = cv2.CascadeClassifier('C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\Scripts\haarcascade_frontalface_alt2') #pega o arquivo de reconhecimento facial do opencv. O diretório pode variar dependendo do sistema operacional
 ##ajustar para reconhecimento dos olhos dentro do retângulo -> se sim tira a foto, se não, deixa quieto
 
 def neural(image):
 
     ## Definindo as funções principais
 
-    path_bias ='C:/Users/grocr/OneDrive/Área de Trabalho/IA/IA-do-Ramo/Promissores/Bias-NNN-SIG-MSE-0.5-3000-0.3' #diretório bias
-    path_pesos = 'C:/Users/grocr/OneDrive/Área de Trabalho/IA/IA-do-Ramo/Promissores/Pesos-NNN-SIG-MSE-0.5-3000-0.3' #diretório pesos
+    path_bias ='C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\Promissores\\Bias-NNN-SIG-MSE-0.5-3000-0.3' #diretório bias
+    path_pesos = 'C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\Promissores\\Pesos-NNN-SIG-MSE-0.5-3000-0.3' #diretório pesos
 
     ##
 
@@ -73,6 +73,7 @@ def neural(image):
 
 def faceRecoginition():
     cont = 0
+    faces = []
     if(os.path.isdir('./faces') == False): #verificação. Existe uma pasta com esse nome? 
         os.mkdir('./faces') #caso não exista ela é criada
 
@@ -80,7 +81,10 @@ def faceRecoginition():
     while (not cv2.waitKey(115) & 0xFF == ord('s')): #exibe a câmera em tempo real até que a tecla "s" seja apertada
         ret, frame = cam.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) #conversão em cinza para a detecção do rosto
-        faces = clf.detectMultiScale(gray) #faces é uma matriz com as coordenadas em pixel de cada rosto
+        try:
+            faces = clf.detectMultiScale(gray) #faces é uma matriz com as coordenadas em pixel de cada rosto
+        except:
+            pass
         for x, y, w, h in faces:
             image = frame[y-60: y+h+100, x-100: x+w+100]
             cv2.imwrite('./faces/face{}.png'.format(cont), image)
@@ -95,6 +99,5 @@ def faceRecoginition():
     cam.release()
     cv2.waitKey(0)
     cv2.destroyAllWindows() #fecha as janelas
-
 
 faceRecoginition()

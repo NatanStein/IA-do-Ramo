@@ -42,8 +42,15 @@ def l1_regularization(pesos,derivative = False):
         w = np.array([np.where(p > 0,1,p) for p in w])
         return w
     return np.sum([np.sum(np.abs(w)) for w in pesos ])
+
+def cross_validation(train, test, train_saidas, test_saidas,k):
+    for i in range(len(train)//k):
+        np.append(test,np.delete(train,0))
+        np.append(test_saidas,np.delete(train_saidas,0))
+        np.append(train,np.delete(test,0))
+        np.append(train_saidas,np.delete(test_saidas,0))
+    return train,test,train_saidas,test_saidas
         
-    
 #
 #Bloco Principal
 #
@@ -53,7 +60,9 @@ path = "C:\\DataSet\\"
 
 dataset,dataset_saidas,dimx,dimy = pdt.process_data_set(path)
 
-train, test, train_saidas, test_saidas = train_test_split(dataset,dataset_saidas,test_size=0.3)
+k_folds = 5
+
+train, test, train_saidas, test_saidas = train_test_split(dataset,dataset_saidas,test_size=1/k_folds)
 
 n_camada_oculta1 = 53//1
 n_camada_oculta2 = 36//1
@@ -69,27 +78,32 @@ bias2 = np.zeros((1,n_camada_oculta2))
 bias3 = np.zeros((1,n_camada_oculta3))
 bias4 = np.zeros((1,1))
 
-momentum = 0.3  
+momentum = 2  
 prev_dw1 = 0.0
 prev_dw2 = 0.0
 prev_dw3 = 0.0
 prev_dw4 = 0.0
 
-reg_l1_c1 = 0.001
-reg_l1_c2 = 0.001
-reg_l1_c3 = 0.001
-reg_l1_c4 = 0.001
+reg_l1_c1 = 0.003
+reg_l1_c2 = 0.003
+reg_l1_c3 = 0.003
+reg_l1_c4 = 0.003
 
 qtt_treino = len(train)
 qtt_test = len(test)
 dinamic = False
-epochs = 2000
-learning_rate = 0.6
+epochs = 10000
+learning_rate = 6
 erros =[]
 erros2 = []
 
 for epocas in range(epochs+1):
     
+    if (epocas + 1) % 1000 == 0:
+        
+        print("Aplicando K-Fold cross-validation, pode demorar um pouco...")
+        train, test, train_saidas, test_saidas = cross_validation(train, test, train_saidas, test_saidas, k_folds)
+        
     inp1 = np.dot(train,pesos1) + bias1
     camada_oculta1 = fa.sigmoid(inp1)
 

@@ -11,8 +11,8 @@ import funcao_ativacao as fa
 import os
 import cv2
 
-path_bias ='C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\Promissores\\Bias-NNN-SIG-0.6-20000-0.3-MSE-0.001REG' 
-path_pesos = 'C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\Promissores\\Pesos-NNN-SIG-0.6-20000-0.3-MSE-0.001REG'
+path_bias ='C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\P&B-FINAL\\Bias-BCE-FINAL' 
+path_pesos = 'C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\P&B-FINAL\\Pesos-BCE-FINAL'
 #Modifique seu PATH
 
 
@@ -64,12 +64,13 @@ def process_entradas(path):
 
 w_layer1, w_layer2, w_layer3, w_layer4, b_layer1, b_layer2, b_layer3, b_layer4 = read_weights_bias(path_bias, path_pesos, 1)
 
-entradas,lista_img = process_entradas('C:\\Users\\natan\\OneDrive\\Área de Trabalho\\IA-do-Ramo\\DataSet\\')
+entradas,lista_img = process_entradas('C:\\Validacao\\')
 
 saida = predict(entradas,"sigmoid")
 
 for resp,nome in zip(saida,lista_img):
     print('Nome da imagem: %s  Resposta: %f'%(nome,resp))
 
-#saidas = np.where(saida >= 0.5,1,0)
-#print(np.count_nonzero(saidas == 1)/len(saidas) * 100)
+saidas = np.where(saida >= 0.5,1,0)
+print(np.count_nonzero(saidas == 1)/len(saidas) * 100)
+

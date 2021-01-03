@@ -17,7 +17,7 @@ def mse (y,y_pred,t,derivative=False):
         return -(y-y_pred) / t
     return 0.5 * np.mean((y-y_pred)**2)
 
-def binary_cross_entropy (y, y_pred,t,derivative=False):
+def bce (y, y_pred,t,derivative=False):
     if derivative:
         return -(y - y_pred) / (y_pred * (1-y_pred) * t)
     return -np.mean(y*np.log(abs(y-y_pred)) + (1 - y)*np.log(abs(1 - y_pred)))
